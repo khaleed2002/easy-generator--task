@@ -41,5 +41,11 @@
         }
       }
     }
+  },
+  "dependencies": {
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/mongoose": "^11.0.3",
+    "mongoose": "^8.16.1",
+    "zod": "^3.25.75"
   }
 }
