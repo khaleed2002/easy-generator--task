@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { isEmail } from "class-validator";
 import { HydratedDocument } from "mongoose";
 
 export type UserDocument = HydratedDocument<User>;
@@ -13,10 +14,12 @@ export class User {
     unique: true,
     lowercase: true,
     trim: true,
-    match: [
-      /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-      "Please enter a valid email",
-    ],
+    validate: {
+      validator: (email: string) => {
+        return isEmail(email);
+      },
+      message: "Please enter a valid email address",
+    },
   })
   email: string;
 
@@ -32,15 +35,16 @@ export class User {
     minlength: 8,
     select: false, // Excludes password from queries by default
     match: [
-      /^(?=.*[A-Za-z])(?=.*[!@#$&*])(?=.*[0-9]).{8}$/gm,
-      `Password should include:\n
-      1- At least one letter.\n
-      2- At least one number.\n
-      3- At least one special character.
-      `,
+      /^(?=.*[A-Za-z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/,
+      "Password must contain at least one letter, one number, and one special character.",
     ],
   })
   password: string;
+
+  @Prop({
+    required: false,
+  })
+  refresh_token_hash: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -52,7 +56,6 @@ UserSchema.index({ email: 1 });
 UserSchema.set("toJSON", {
   transform: function (doc, ret) {
     delete ret.password;
-    delete ret._id;
     delete ret.__v;
     return ret;
   },

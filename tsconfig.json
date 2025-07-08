@@ -4,9 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./apps/server-e2e"
-    },
-    {
       "path": "./apps/server"
     }
   ]
