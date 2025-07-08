@@ -1,6 +1,6 @@
-# Easy Generator Task Backend
+# Easy Generator Task
 
-This is a **NestJS** backend for authentication and user management, using MongoDB and JWT.
+This project is a fullstack authentication system built with **NestJS** (backend) and **React 19** (frontend), using MongoDB, JWT, and modern UI/UX best practices.
 
 ---
 
@@ -35,10 +35,17 @@ First, install dependencies at the root of the repo:
 npm install
 ```
 
-Then, to start the backend server, run:
+### Start the Backend (NestJS)
 
 ```bash
 npx nx run @easy-generator--task/server:serve
+```
+
+### Start the Frontend (React)
+
+```bash
+npx nx run @easy-generator--task/client:dev
+```
 
 You can also use the Nx Console extension for VS Code for a visual experience.
 
@@ -46,7 +53,23 @@ You can also use the Nx Console extension for VS Code for a visual experience.
 
 ---
 
+---
+
+## Features
+
+- **Modern React 19** with functional components and hooks
+- **Reusable UI components** for forms and feedback
+- **Live validation** for sign up requirements (with check/cross icons)
+- **Loading spinners** for async actions (using lucide-react)
+- **Authentication** with JWT, refresh tokens, and protected routes
+- **Beautiful UI** with Tailwind CSS
+
+---
+
 ## API Documentation
 
-Full API documentation is available in [API_DOCS.md](./API_DOCS.md).
+Full API documentation is available in [API_DOCS.md](/README.api.md).
+
+```
+
 ```
