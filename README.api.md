@@ -1,4 +1,3 @@
-````md
 # API Documentation
 
 ## Authentication
@@ -14,6 +13,7 @@
 
 - **Purpose**: Register a new user.
 - **Request Body** (JSON):
+
   ```json
   {
     "email": "user@example.com",
@@ -21,7 +21,6 @@
     "name": "John Doe"
   }
   ```
-````
 
 - **Responses**:
 
@@ -87,8 +86,6 @@
 
 ## Protected Endpoints
 
-> All require a valid **Bearer** access token in the `Authorization` header.
-
 ### `POST /auth/logout`
 
 - **Purpose**: Log out the user and revoke their refresh token.
@@ -127,17 +124,6 @@
     ```
 
     - Sets a new `refresh_token` cookie.
-
-  - **401 Unauthorized**
-    Missing refresh token:
-
-    ```json
-    {
-      "statusCode": 401,
-      "message": "Refresh token not found" | "Unauthorized",
-      "error": "Unauthorized"
-    }
-    ```
 
   - **403 Forbidden**
     Missing or invalid refresh token:
