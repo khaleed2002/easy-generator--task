@@ -1,101 +1,131 @@
-# EasyGeneratorTask
+# Easy Generator Task Backend
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+This is a **NestJS** backend for authentication and user management, using MongoDB and JWT.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## Getting Started
 
-## Run tasks
+### Prerequisites
 
-To run the dev server for your app, use:
+- Node.js (v18+ recommended)
+- Docker (for local MongoDB)
 
-```sh
-npx nx serve server
+### Environment Variables
+
+Create a `.env` file in the root of `apps/server/` with the following:
+
+```
+MONGODB_URI=<your-mongodb-uri>
+JWT_SECRET=<your-jwt-secret>
+JWT_EXPIRES_IN=7d
 ```
 
-To create a production bundle:
+- If you want a local MongoDB instance, run:
+  ```bash
+  docker-compose up
+  ```
+  This will start MongoDB and you can use the URI: `mongodb://admin:saskq%40Pasa%40%23s25s%4054@localhost:27017/easy-generator--task?authSource=admin`
 
-```sh
-npx nx build server
+## Running the Project with Nx
+
+First, install dependencies at the root of the repo:
+
+```bash
+npm install
 ```
 
-To see all available targets to run for a project, run:
+Then, to start the backend server, run:
 
-```sh
-npx nx show project server
+```bash
+npx nx run @easy-generator--task/server:serve
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+Or, if you have Nx CLI installed globally:
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
+```bash
+nx run @easy-generator--task/server:serve
 ```
 
-To generate a new library, use:
+You can also use the Nx Console extension for VS Code for a visual experience.
 
-```sh
-npx nx g @nx/node:lib mylib
-```
+---
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+---
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## API Endpoints
 
-## Set up CI!
+### Auth
 
-### Step 1
+#### Public Endpoints
 
-To connect to Nx Cloud, run the following command:
+- **POST `/api/auth/sign-up`**
 
-```sh
-npx nx connect
-```
+  - Registers a new user.
+  - **Body:**
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "Password123!",
+      "name": "John Doe"
+    }
+    ```
+  - **Returns:**
+    - `201 Created` with tokens:
+      ```json
+      {
+        "access_token": "...",
+        "refresh_token": "..."
+      }
+      ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+- **POST `/api/auth/sign-in`**
+  - Logs in a user.
+  - **Body:**
+    ```json
+    {
+      "email": "user@example.com",
+      "password": "Password123!"
+    }
+    ```
+  - **Returns:**
+    - `200 OK` with tokens:
+      ```json
+      {
+        "access_token": "...",
+        "refresh_token": "..."
+      }
+      ```
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+#### Protected Endpoints (require Bearer token)
 
-### Step 2
+- **POST `/api/auth/logout`**
 
-Use the following command to configure a CI workflow for your workspace:
+  - Logs out the user (invalidates refresh token).
+  - **Headers:**
+    - `Authorization: Bearer <access_token>`
+  - **Returns:**
+    - `200 OK` on success.
 
-```sh
-npx nx g ci-workflow
-```
+- **POST `/api/auth/refresh`**
+  - Refreshes access and refresh tokens.
+  - **Body:**
+    ```json
+    {
+      "refresh_token": "..."
+    }
+    ```
+  - **Returns:**
+    - `200 OK` with new tokens:
+      ```json
+      {
+        "access_token": "...",
+        "refresh_token": "..."
+      }
+      ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Install Nx Console
+## Notes
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- All protected endpoints require a valid JWT access token in the `Authorization` header.
