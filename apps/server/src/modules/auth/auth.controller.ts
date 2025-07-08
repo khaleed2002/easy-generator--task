@@ -70,9 +70,6 @@ export class AuthController {
       sub: mongoose.Types.ObjectId;
       refresh_token: string;
     };
-    if (!user["refresh_token"]) {
-      throw new UnauthorizedException("Refresh token not found");
-    }
 
     const { access_token, refresh_token: newRefreshToken } =
       await this.authService.refreshTokens(user["sub"], user["refresh_token"]);
