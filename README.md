@@ -68,7 +68,7 @@ You can also use the Nx Console extension for VS Code for a visual experience.
 
 ## API Documentation
 
-Full API documentation is available in [API_DOCS.md](/README.api.md).
+Full API documentation is available in [API_DOCS](/README.api.md).
 
 ```
 

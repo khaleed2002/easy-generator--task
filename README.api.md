@@ -1,13 +1,19 @@
+````md
 # API Documentation
 
 ## Authentication
 
-### Public Endpoints
+> All authentication endpoints are prefixed with `/auth` (optionally under a global `/api` prefix).  
+> Access tokens are returned in responses; refresh tokens are set as HTTP-only cookies under the name `refresh_token`.
 
-#### POST `/api/auth/sign-up`
+---
 
-- **Description:** Register a new user.
-- **Request Body:**
+## Public Endpoints
+
+### `POST /auth/sign-up`
+
+- **Purpose**: Register a new user.
+- **Request Body** (JSON):
   ```json
   {
     "email": "user@example.com",
@@ -15,65 +21,134 @@
     "name": "John Doe"
   }
   ```
-- **Responses:**
-  - `201 Created`
+````
+
+- **Responses**:
+
+  - **201 Created**
+
     ```json
     {
-      "access_token": "<jwt>",
-      "refresh_token": "<jwt>"
+      "access_token": "<jwt>"
     }
     ```
-  - `400 Bad Request` — Validation errors.
 
-#### POST `/api/auth/sign-in`
+    - Sets a `refresh_token` HTTP-only cookie.
 
-- **Description:** Log in an existing user.
-- **Request Body:**
+  - **400 Bad Request**
+    Validation errors (e.g. missing fields, invalid email, weak password).
+  - **409 Conflict**
+    Email already in use:
+
+    ```json
+    {
+      "statusCode": 409,
+      "message": "User with this email already exists",
+      "error": "Conflict"
+    }
+    ```
+
+### `POST /auth/sign-in`
+
+- **Purpose**: Authenticate an existing user.
+- **Request Body** (JSON):
+
   ```json
   {
     "email": "user@example.com",
     "password": "Password123!"
   }
   ```
-- **Responses:**
-  - `200 OK`
+
+- **Responses**:
+
+  - **200 OK**
+
     ```json
     {
-      "access_token": "<jwt>",
-      "refresh_token": "<jwt>"
+      "access_token": "<jwt>"
     }
     ```
-  - `403 Forbidden` — Invalid credentials.
 
-### Protected Endpoints (Require Bearer Token)
+    - Sets a `refresh_token` HTTP-only cookie.
 
-#### POST `/api/auth/logout`
+  - **401 Unauthorized**
+    Invalid credentials:
 
-- **Description:** Log out the user and invalidate the refresh token.
-- **Headers:**
-  - `Authorization: Bearer <access_token>`
-- **Responses:**
-  - `200 OK` — Successfully logged out.
-  - `401 Unauthorized` — Invalid or missing token.
+    ```json
+    {
+      "statusCode": 401,
+      "message": "Invalid Credentials",
+      "error": "Unauthorized"
+    }
+    ```
 
-#### POST `/api/auth/refresh`
+---
 
-- **Description:** Refresh access and refresh tokens.
-- **Request Body:**
-  ```json
-  {
-    "refresh_token": "<jwt>"
-  }
+## Protected Endpoints
+
+> All require a valid **Bearer** access token in the `Authorization` header.
+
+### `POST /auth/logout`
+
+- **Purpose**: Log out the user and revoke their refresh token.
+- **Headers**:
+
   ```
-- **Responses:**
-  - `200 OK`
+  Authorization: Bearer <access_token>
+  ```
+
+- **Responses**:
+
+  - **200 OK**
+
+    ```json
+    {}
+    ```
+
+    - Clears the `refresh_token` cookie.
+
+  - **401 Unauthorized**
+    Missing or invalid access token.
+
+### `POST /auth/refresh`
+
+- **Purpose**: Issue a new access token using the refresh token.
+- **Cookies**:
+  Reads `refresh_token` from HTTP-only cookie (no request body).
+- **Responses**:
+
+  - **200 OK**
+
     ```json
     {
-      "access_token": "<jwt>",
-      "refresh_token": "<jwt>"
+      "access_token": "<new_jwt>"
     }
     ```
-  - `403 Forbidden` — Invalid or expired refresh token.
+
+    - Sets a new `refresh_token` cookie.
+
+  - **401 Unauthorized**
+    Missing refresh token:
+
+    ```json
+    {
+      "statusCode": 401,
+      "message": "Refresh token not found" | "Unauthorized",
+      "error": "Unauthorized"
+    }
+    ```
+
+  - **403 Forbidden**
+    Missing or invalid refresh token:
+
+    ```json
+    {
+      "statusCode": 403,
+      "message": "Access Denied",
+      "error": "Forbidden"
+    }
+    ```
 
 ---
 
@@ -89,5 +164,21 @@
 
 ---
 
-- All protected endpoints require a valid JWT access token in the `Authorization` header.
-- Passwords must contain at least one letter, one number, and one special character.
+## Password Requirements
+
+- Minimum length: 8 characters
+- At least one uppercase letter (`A–Z`)
+- At least one lowercase letter (`a–z`)
+- At least one digit (`0–9`)
+- At least one special character (e.g. `!@#$&*`)
+
+---
+
+> **Note**:
+>
+> - Refresh tokens are **never** exposed in response bodies—only via secure HTTP-only cookies.
+> - All protected endpoints must include `Authorization: Bearer <access_token>`.
+
+```
+
+```
