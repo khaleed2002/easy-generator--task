@@ -35,7 +35,7 @@ export class AuthController {
     }
     const { access_token, refresh_token } = await this.authService.signUp(dto);
     addRefreshTokenToCokkies(refresh_token, res, this.config);
-    return res.json({ access_token, refresh_token });
+    return res.json({ access_token });
   }
 
   @Post("/sign-in")
@@ -49,7 +49,7 @@ export class AuthController {
     }
     const { access_token, refresh_token } = await this.authService.signIn(dto);
     addRefreshTokenToCokkies(refresh_token, res, this.config);
-    return res.json({ access_token, refresh_token });
+    return res.json({ access_token });
   }
 
   @UseGuards(AuthGuard("jwt"))
@@ -78,6 +78,6 @@ export class AuthController {
       await this.authService.refreshTokens(user["sub"], user["refresh_token"]);
     addRefreshTokenToCokkies(newRefreshToken, res, this.config);
 
-    return res.json({ access_token, refresh_token: newRefreshToken });
+    return res.json({ access_token });
   }
 }
