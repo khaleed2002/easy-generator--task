@@ -1,4 +1,4 @@
-import { IsEmail, Matches, MinLength } from "class-validator";
+import { IsEmail } from "class-validator";
 import { IsRequiredString } from "./helpers";
 export class SignInDto {
   @IsEmail(
@@ -8,10 +8,6 @@ export class SignInDto {
   @IsRequiredString("email")
   email: string;
 
-  @Matches(/^(?=.*[A-Za-z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/, {
-    message:
-      "Password must contain at least one letter, one number, and one special character.",
-  })
   @IsRequiredString("password")
   password: string;
 }

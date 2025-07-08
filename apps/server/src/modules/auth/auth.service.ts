@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { User } from "../../../schemas/user.schema";
 import { Model, ObjectId } from "mongoose";
@@ -36,7 +40,8 @@ export class AuthService {
 
     const isPasswordMatches = await bcrypt.compare(dto.password, user.password);
 
-    if (!isPasswordMatches) throw new ForbiddenException("Invalid Credentials");
+    if (!isPasswordMatches)
+      throw new UnauthorizedException("Invalid Credentials");
     const tokens = await this.getTokens(user._id, dto.email);
 
     await this.updateRefreshTokenHash(user._id, tokens.refresh_token);
@@ -67,7 +72,11 @@ export class AuthService {
     await this.updateRefreshTokenHash(user._id, tokens.refresh_token);
     return tokens;
   }
-
+  async isUserEmailExists(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (user) return true;
+    return false;
+  }
   hashData(data: string) {
     return bcrypt.hash(data, 10);
   }
