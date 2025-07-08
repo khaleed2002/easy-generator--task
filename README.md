@@ -41,12 +41,6 @@ Then, to start the backend server, run:
 npx nx run @easy-generator--task/server:serve
 ```
 
-Or, if you have Nx CLI installed globally:
-
-```bash
-nx run @easy-generator--task/server:serve
-```
-
 You can also use the Nx Console extension for VS Code for a visual experience.
 
 ---
