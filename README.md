@@ -106,23 +106,7 @@ You can also use the Nx Console extension for VS Code for a visual experience.
 
 ---
 
----
-
-## Features
-
-- **Modern React 19** with functional components and hooks
-- **Reusable UI components** for forms and feedback
-- **Live validation** for sign up requirements (with check/cross icons)
-- **Loading spinners** for async actions (using lucide-react)
-- **Authentication** with JWT, refresh tokens, and protected routes
-- **Beautiful UI** with Tailwind CSS
-
----
 
 ## API Documentation
 
 Full API documentation is available in [API_DOCS](/README.api.md).
-
-```
-
-```
