@@ -11,7 +11,6 @@ This project is a fullstack authentication system built with **NestJS** (backend
 - Node.js (v18+ recommended)
 - Docker (for local MongoDB)
 
-````md
 ### Environment Variables
 
 Your server and client apps require some environment variables to run correctly. Follow the steps below to set them up.
@@ -37,7 +36,6 @@ Your server and client apps require some environment variables to run correctly.
    # Node environment (development | production)
    NODE_ENV=
    ```
-````
 
 3. **Quick‑start Example:**
    If you want to run a local MongoDB via Docker, execute:
