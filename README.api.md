@@ -165,6 +165,3 @@
 > - Refresh tokens are **never** exposed in response bodies—only via secure HTTP-only cookies.
 > - All protected endpoints must include `Authorization: Bearer <access_token>`.
 
-```
-
-```
