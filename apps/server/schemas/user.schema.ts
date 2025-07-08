@@ -49,9 +49,6 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Create indexes for better performance
-UserSchema.index({ email: 1 });
-
 // Enable virtuals in JSON output
 UserSchema.set("toJSON", {
   transform: function (doc, ret) {

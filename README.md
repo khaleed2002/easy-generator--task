@@ -39,7 +39,6 @@ Then, to start the backend server, run:
 
 ```bash
 npx nx run @easy-generator--task/server:serve
-```
 
 You can also use the Nx Console extension for VS Code for a visual experience.
 
@@ -50,3 +49,4 @@ You can also use the Nx Console extension for VS Code for a visual experience.
 ## API Documentation
 
 Full API documentation is available in [API_DOCS.md](./API_DOCS.md).
+```

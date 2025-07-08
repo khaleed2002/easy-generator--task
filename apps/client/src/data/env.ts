@@ -3,15 +3,16 @@ import z from "zod";
 const envSchema = z.object({
   PORT: z.coerce.number().min(1000),
   API_URL: z.string().url(),
-  ENV: z.union([z.literal("development"), z.literal("production")]),
 });
-
 export class Configs {
   private static instance: Configs;
   private configs: z.infer<typeof envSchema>;
 
   private constructor() {
-    this.configs = envSchema.parse(process.env);
+    this.configs = envSchema.parse({
+      PORT: process.env.PORT,
+      API_URL: process.env.API_URL,
+    });
     Object.freeze(this.configs);
   }
 
@@ -32,9 +33,5 @@ export class Configs {
 
   public get API_URL(): string {
     return this.configs.API_URL;
-  }
-
-  public get ENV(): "development" | "production" {
-    return this.configs.ENV;
   }
 }
